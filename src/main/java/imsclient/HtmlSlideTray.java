@@ -122,7 +122,8 @@ public class HtmlSlideTray {
                 Date now = new Date();
                 System.out.println();
                 System.out.println(value);
-                // get the JSON slide array for the case
+                // 5a. Get the JSON slide array for the case and load it into an
+                //     ImsSlide array.
                 String response = client
                     .target(String.format(url + "/SectraPathologyServer/api/requestslides?requestId=%s&hash=%s", URLEncoder.encode(value), URLEncoder.encode(hash)))
                     .request(MediaType.APPLICATION_JSON)
@@ -147,11 +148,13 @@ public class HtmlSlideTray {
                     outFile.println("<tr>");
                     outFile.println(String.format("<td>%s</td><td>%s</td><td>%s</td>", slide.parsedPart + slide.parsedBlock, slide.parsedSlide, slide.parsedStain));
                     if(slide.hasImage) {
+                        // 5b. Get the slide label.
                         InputStream responseLabel = client
                             .target(String.format(url + "/SectraPathologyServer/slides/%s/images/label.jpeg", slide.id))
                             .request(MediaType.APPLICATION_OCTET_STREAM)
                             .get(InputStream.class);
                         byte[] responseLabelBytes = Base64.getEncoder().encode(IOUtils.toByteArray(responseLabel));
+                        // 5b. Get the slide macro.
                         InputStream macroLabel = client
                             .target(String.format(url + "/SectraPathologyServer/slides/%s/images/slide-photo.jpeg", slide.id))
                             .request(MediaType.APPLICATION_OCTET_STREAM)    
